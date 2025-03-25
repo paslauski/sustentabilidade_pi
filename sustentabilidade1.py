@@ -3,7 +3,7 @@ data = input("Qual é a data (DD/MM/AAAA)? ")
 agua = float(input("Quantos litros de água você consumiu hoje? "))
 energia = float(input("Quantos kWh de energia elétrica você consumiu hoje? "))
 percentual_reciclado = float(input("Qual a porcentagem de resíduos reciclados no total (em %)? "))
-
+'''Entrada antiga meios de transporte
 # Entrada de múltiplos meios de transporte
 print("\nEscolha os meios de transporte utilizados hoje (digite os números separados por vírgula):")
 print("1. Transporte público (ônibus, metrô, trem)")
@@ -15,6 +15,8 @@ print("6. Carona compartilhada")
 
 transportes = input("Digite os números correspondentes (ex: 1,3,5): ")
 transportes = [int(x) for x in transportes.split(",")]
+'''
+print("\nEscolha os meios de transporte utilizados hoje: ")
 
 # Classificação de consumo de água
 if agua < 150:
@@ -39,8 +41,8 @@ elif 20 <= percentual_reciclado <= 50:
     class_residuos = "Moderada Sustentabilidade"
 else:
     class_residuos = "Baixa Sustentabilidade"
-
-# Classificação do transporte
+'''
+# Classificação antiga do transporte
 sustentavel = [1, 2, 3, 5]  # Transporte público, bicicleta, a pé, carro elétrico
 intermediario = [6]  # Carona compartilhada
 nao_sustentavel = [4]  # Carro a combustíveis fósseis
@@ -51,7 +53,7 @@ elif all(t in nao_sustentavel for t in transportes):
     class_transporte = "Baixa Sustentabilidade"
 else:
     class_transporte = "Moderada Sustentabilidade"
-
+'''
 # Exibir relatório
 print("\n--- Relatório de Sustentabilidade ---")
 print(f"Data: {data}")
