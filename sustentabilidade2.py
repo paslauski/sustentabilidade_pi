@@ -76,12 +76,14 @@ else:
     class_transporte = "Moderada Sustentabilidade"
 '''
 # Classificação do transporte atualizada
-if transporte_publico == 'S' and carro == 'S':
-    class_transporte = "Moderada Sustentabilidade"
+if carro == 'S' or carona_compartilhada == 'S':
+    if bicleta == 'S' or transporte_publico == 'S' or carro_eletrico == 'S' or caminhada == 'S':
+        class_transporte = "Moderada Sustentabilidade"
+    else:
+        class_transporte = "Baixa Sustentabilidade"
 elif bicleta == 'S' or transporte_publico == 'S' or carro_eletrico == 'S'or caminhada == 'S':
     class_transporte = "Alta Sustentabilidade"
-else:
-    class_transporte = "Baixa Sustentabilidade"
+
 # Exibir relatório
 print("\n--- Relatório de Sustentabilidade ---")
 print(f"Data: {data}")
