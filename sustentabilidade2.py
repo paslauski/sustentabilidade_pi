@@ -4,19 +4,7 @@ agua = float(input("Quantos litros de água você consumiu hoje? "))
 energia = float(input("Quantos kWh de energia elétrica você consumiu hoje? "))
 nao_reciclado=float(input("Quantos KG de resíduos não reciclaveis você gerou hoje? "))
 percentual_reciclado = float(input("Qual a porcentagem de resíduos reciclados no total (em %)? "))
-'''
-# Entrada de múltiplos meios de transporte antiga
-print("\nEscolha os meios de transporte utilizados hoje (digite os números separados por vírgula):")
-print("1. Transporte público (ônibus, metrô, trem)")
-print("2. Bicicleta")
-print("3. A pé")
-print("4. Carro (combustível fósseis)")
-print("5. Carro elétrico")
-print("6. Carona compartilhada")
 
-transportes = input("Digite os números correspondentes (ex: 1,3,5): ")
-transportes = [int(x) for x in transportes.split(",")]
-'''
 #Entrada de múltiplos meios de transporte atualizada
 print(f"\nEscolha os meios de transporte utilizados hoje: Responda apenas com S ou N.")
 transporte_publico = input(f"\t1. Transporte público (ônibus, metrô, trem) ")
@@ -62,19 +50,7 @@ elif 20 <= percentual_reciclado <= 50:
     class_residuos = "Moderada Sustentabilidade"
 else:
     class_residuos = "Baixa Sustentabilidade"
-'''
-# Classificação do transporte antiga
-sustentavel = [1, 2, 3, 5]  # Transporte público, bicicleta, a pé, carro elétrico
-intermediario = [6]  # Carona compartilhada
-nao_sustentavel = [4]  # Carro a combustíveis fósseis
 
-if all(t in sustentavel for t in transportes):
-    class_transporte = "Alta Sustentabilidade"
-elif all(t in nao_sustentavel for t in transportes):
-    class_transporte = "Baixa Sustentabilidade"
-else:
-    class_transporte = "Moderada Sustentabilidade"
-'''
 # Classificação do transporte atualizada
 if carro == 'S' or carona_compartilhada == 'S':
     if bicleta == 'S' or transporte_publico == 'S' or carro_eletrico == 'S' or caminhada == 'S':
