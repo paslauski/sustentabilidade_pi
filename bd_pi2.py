@@ -61,40 +61,7 @@ while programa == 1:
             for linha in resultado:
                 print(f"CA_ID: {linha[0]}, Nome: {linha[1]}, Data: {linha[2]}, Gasto: {linha[3]}")
 
-        #CONSUMO DE ENERGIA
-        #tabela consumo de energia -> como ela esta no mysql (com ou sem dados adc)
-
-        cursor.execute("SELECT * FROM Consumo_Energia")
-        resultado = cursor.fetchall()
-
-        print("\nConsumo de enegia:")
-        for linha in resultado:
-            print(f"A tabela atual: \n CE_ID: {linha[0]}  \t CE_NOME: {linha[1]}\t  CE_DATA: {linha[2]}\t  CE_GASTO: {linha[3]}")
-
-        #INSERIR DADOS
-        in_consumoenergia = int(input(f'''Você deseja inserir algum dado na tabela CONSUM DE ENERGIA?\n
-        tecle = 1 para >>>SIM<<   \t tecle = 0 para >>> NÃO<<'''))
-        if in_consumoenergia == 1:
-            controle__energia = 1
-        if in_consumoenergia == 1:
-            CE_NOME = input("Digite o nome: ")
-            CE_DATA = int(input("Digite a data (AAAAMMDD): ")) #tem q ser int no mysql mas como q põe data com "-"? 
-            CE_GASTO = float(input('digite o gasto(até 99.9): '))
-
-            sql = "INSERT INTO Consumo_Energia (CE_NOME, CE_DATA, CE_GASTO) VALUES (%s, %s, %s)"
-            valores = (CE_NOME, CE_DATA, CE_GASTO)
-            cursor.execute(sql, valores)
-            conexao.commit()
-            print("Dados inseridos com sucesso!")
-
-        #mostra tudo
-            tecle = input('>>>tecle qualquer tecla para mostrar tudo<<<')
-            cursor.execute("SELECT * FROM Consumo_Energia")
-            resultado = cursor.fetchall()
-            print("\nConsumo de Energia:")
-            for linha in resultado:
-                print(f"CE_ID: {linha[0]}, Nome: {linha[1]}, Data: {linha[2]}, Gasto: {linha[3]}")
-
+        
     #1 DELETAR DADO por ID
 
     if funcao == 1:
@@ -131,14 +98,48 @@ while programa == 1:
             cursor.execute("SELECT * FROM Consumo_Energia")
             resultado = cursor.fetchall()
 
-            print("\nConsumo de enegia:")
-            for linha in resultado:
-                print(f"A tabela atual: \n CE_ID: {linha[0]}  \t CE_NOME: {linha[1]}\t  CE_DATA: {linha[2]}\t  CE_GASTO: {linha[3]}")
+            # print("\nConsumo de enegia:")
+            # for linha in resultado:
+            #     print(f"A tabela atual: \n CE_ID: {linha[0]}  \t CE_NOME: {linha[1]}\t  CE_DATA: {linha[2]}\t  CE_GASTO: {linha[3]}")
             #inserir dado na tabela pela função 2
             TECLA_I=int(input(f'''Você deseja inserir algum dado na tabela CONSUM DE ENERGIA?\n
         tecle = 1 para >>>SIM<<   \t tecle = 0 para >>> NÃO<<'''))
             if TECLA_I == 1:
                 controle_energia = 1
+                #CONSUMO DE ENERGIA
+        #tabela consumo de energia -> como ela esta no mysql (com ou sem dados adc)
+
+        cursor.execute("SELECT * FROM Consumo_Energia")
+        resultado = cursor.fetchall()
+
+        print("\nConsumo de enegia:")
+        for linha in resultado:
+            print(f"A tabela atual: \n CE_ID: {linha[0]}  \t CE_NOME: {linha[1]}\t  CE_DATA: {linha[2]}\t  CE_GASTO: {linha[3]}")
+
+        #INSERIR DADOS
+        in_consumoenergia = int(input(f'''Você deseja inserir algum dado na tabela CONSUM DE ENERGIA?\n
+        tecle = 1 para >>>SIM<<   \t tecle = 0 para >>> NÃO<<'''))
+        if in_consumoenergia == 1:
+            controle__energia = 1
+            if controle_energia == 1:
+                CE_NOME = input("Digite o nome: ")
+                CE_DATA = int(input("Digite a data (AAAAMMDD): ")) #tem q ser int no mysql mas como q põe data com "-"? 
+                CE_GASTO = float(input('digite o gasto(até 99.9): '))
+
+                sql = "INSERT INTO Consumo_Energia (CE_NOME, CE_DATA, CE_GASTO) VALUES (%s, %s, %s)"
+                valores = (CE_NOME, CE_DATA, CE_GASTO)
+                cursor.execute(sql, valores)
+                conexao.commit()
+                print("Dados inseridos com sucesso!")
+
+            #mostra tudo
+                tecle = input('>>>tecle qualquer tecla para mostrar tudo<<<')
+                cursor.execute("SELECT * FROM Consumo_Energia")
+                resultado = cursor.fetchall()
+                print("\nConsumo de Energia:")
+                for linha in resultado:
+                    print(f"CE_ID: {linha[0]}, Nome: {linha[1]}, Data: {linha[2]}, Gasto: {linha[3]}")
+
 
 
 
