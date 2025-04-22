@@ -1,16 +1,13 @@
-# pip install mysql-connector
-# pip install mysql-connector-python
-#cmd ^
-
 import mysql.connector
 
 
 conexao = mysql.connector.connect(
-host="localhost", # IP ou hostname do servidor MySQL puc-> BD-ACD   localhost
+host="127.0.0.1", # IP ou hostname do servidor MySQL puc-> BD-ACD   localhost
 user="root", # "login" root
-password="@Isamysql", # senha
-database="sustentabilidade" # nome do banco (tem que existir) #BD170225416(isa)
+password="Miguel49*", # senha
+database="PI" # nome do banco (tem que existir) #BD170225416(isa)
 )
+
 cursor = conexao.cursor()
 print('conectado com sucesso!')
 
