@@ -5,7 +5,6 @@
 import mysql.connector
 
 
-
 conexao = mysql.connector.connect(
 host="localhost", # IP ou hostname do servidor MySQL puc-> BD-ACD   localhost
 user="root", # "login" root
