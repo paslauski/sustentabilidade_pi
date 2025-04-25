@@ -85,7 +85,7 @@ while programa == 1:
     # 2 IR DIRETO PARA UMA TABELA ESPECIFICA (ver)
     if funcao == 2:
         tecle = int(input(f'''Qual tabela você deseja ver? 
-                         \n 1. TABELA DE CONSUMO DE ENERGIA \t 2. TABELA CONSUMO DE ÁGUA \n 3. TABELA CONSUMO DE NÃO RECICLAVEIS \n TABELA DE TRANSPORTES'''))
+                        \n 1. TABELA DE CONSUMO DE ENERGIA \t 2. TABELA CONSUMO DE ÁGUA \n 3. TABELA CONSUMO DE NÃO RECICLAVEIS \n TABELA DE TRANSPORTES'''))
         select_ce= 1
         select_ca= 2
         select_nr= 3

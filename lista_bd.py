@@ -5,6 +5,16 @@
 import mysql.connector
 
 
+
+conexao = mysql.connector.connect(
+host="localhost", # IP ou hostname do servidor MySQL puc-> BD-ACD   localhost
+user="root", # "login" root
+password="@Isamysql", # senha
+database="sustentabilidade" # nome do banco (tem que existir) #BD170225416(isa)
+)
+
+
+
 conexao = mysql.connector.connect(
 host="BD-ACD", # IP ou hostname do servidor MySQL puc-> BD-ACD
 user="BD170225416", # "login"
