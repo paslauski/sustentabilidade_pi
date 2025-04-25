@@ -26,7 +26,7 @@ CE_RESULTADO varchar(50),
 UT_RESULTADO varchar(50)
 );
 alter table resultados
-add constraint fk_id_resultado
+add constraint fk_id_resultados
 foreign key (ID) references sustentabilidade(ID);
 
 alter table resultados
@@ -43,6 +43,6 @@ foreign key (Id_s) references sustentabilidade(ID);
 
 
 
-insert into sustentabilidade values(1, '2025-12-02', 50, 5, 5, 5, 'S', 'S', 'S', 'S', 'S', 'S', 'S');
+insert into sustentabilidade values(1, '2025-12-02', 50, 5, 5, 5, 'S', 'S', 'S', 'S', 'S', 'S');
 alter table resultados
 drop foreign key fk_data_resultados;

@@ -17,18 +17,17 @@ print("TABELA SUSTENTABILIDADE:")
 for linha in resultado:
     print(f"""\n 
 ID:{linha[0]}
-\t DATA_:{linha[1]}
-\t CA_DATA: {linha[2]}
-\t CA_GASTO: {linha[3]}
-\t NR_QUANTIDADE:{linha[4]}
-\t NR_PORCENTAGEM:{linha[5]}
-\t CE_GASTO decimal:{linha[6]}
-\t UT_CARRO:{linha[7]}
-\t UT_CARONA_COMPARTILHADA :{linha[8]}
-\t UT_BICICLETA :{linha[9]}
-\t UT_TRANSPORTE_PUBLICO :{linha[10]}
-\t UT_CARRO_ELETRICO:{linha[11]}
-\t UT_CAMINHADA :{linha[12]}""")
+\t DATA_:{linha[1]} 
+\t CA_GASTO: {linha[2]}
+\t NR_QUANTIDADE:{linha[3]}
+\t NR_PORCENTAGEM:{linha[4]}
+\t CE_GASTO decimal:{linha[5]}
+\t UT_CARRO:{linha[6]}
+\t UT_CARONA_COMPARTILHADA :{linha[7]}
+\t UT_BICICLETA :{linha[8]}
+\t UT_TRANSPORTE_PUBLICO :{linha[9]}
+\t UT_CARRO_ELETRICO:{linha[10]}
+\t UT_CAMINHADA :{linha[11]}""")
 
 
 #tabela resultados
