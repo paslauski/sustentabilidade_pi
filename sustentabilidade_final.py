@@ -3,10 +3,10 @@ import mysql.connector
 programaAtivo = True
 
 conexao = mysql.connector.connect(
-host="", 
-user="", 
-password="", 
-database=""
+host="BD-ACD", # IP ou hostname do servidor MySQL puc-> BD-ACD
+user="BD170225416", # "login"
+password="Yyqdk4", # senha
+database="BD170225416" # nome do banco (tem que existir) #BD170225416(isa)
 )
 cursor = conexao.cursor()
 print("Conectado com sucesso!")
@@ -110,32 +110,26 @@ while programaAtivo:
                             VALUES(%s, %s, %s, %s, %s)"""),
             (DATA_, CA_RESULTADO, NIVEL_NR_PORCENTAGEM, CE_RESULTADO, NIVEL_TRANSPORTE))
             conexao.commit()
-            print('Dados inseridos com sucesso!')
+            print('\nDados inseridos com sucesso!')
+            tecle= input('>>ENTER<<')
         case 2:#DELETAR ALGUM DADO POR ID
 
-            deletar=True
-            while deletar:
-                id_excluir = int(input("digite o ID que deseja excluir: "))
-                cursor.execute("SELECT *  FROM sustentabilidade WHERE ID = %s", (id_excluir,))
-                existe= cursor.fetchone()
+            id_excluir = int(input("digite o ID que deseja excluir: "))
+            cursor.execute("SELECT *  FROM sustentabilidade WHERE ID = %s", (id_excluir,))
+            existe= cursor.fetchone()
 
-                if existe:
-                    cursor.execute("DELETE FROM sustentabilidade WHERE ID = %s", (id_excluir,))
-                    conexao.commit()
-                    print(f"\no registro com ID {id_excluir} foi excluido com sucesso!")
+            if existe:
+                cursor.execute("DELETE FROM sustentabilidade WHERE ID = %s", (id_excluir,))
+                conexao.commit()
+                print(f"\no registro com ID {id_excluir} foi excluido com sucesso!")
 
-                else:
-                    print(f"\no registro com ID {id_excluir} não existe na tabela!")
-                
-                #mostra tudo dnv
-                deletar = input('\nDeseja apagar algum outro dado? \n tecle = S para >>>SIM<<   \t tecle = N para >>> NÃO<<:').upper()
-                if deletar != 'S' and deletar != 'N':
-                    print('Você saiu da função de deletar dado!')
-                    deletar=False
-                break
+            else:
+                print(f"\no registro com ID {id_excluir} não existe na tabela!")
+            tecle= input('>>ENTER<<')
 
         case 3:#ALTERAR DADO INSERIDO\n
             pass
+
         case 4:#LISTA TABELA POR ID
             aux = int(input('Digite o ID que você deseja pesquisar: '))
             print("\nTABELA SUSTENTABILIDADE:")
@@ -147,26 +141,44 @@ while programaAtivo:
             for linha in resultado:
                 print(f"""\n 
             ID: {linha[0]}
-            \t DATA_: {linha[1]}
-            \t CA_GASTO: {linha[2]}
-            \t NR_QUANTIDADE: {linha[3]}
-            \t NR_PORCENTAGEM: {linha[4]}
-            \t CE_GASTO decimal: {linha[5]}
-            \t UT_CARRO: {linha[6]}
-            \t UT_CARONA_COMPARTILHADA: {linha[7]}
-            \t UT_BICICLETA: {linha[8]}
-            \t UT_TRANSPORTE_PUBLICO: {linha[9]}
-            \t UT_CARRO_ELETRICO: {linha[10]}
-            \t UT_CAMINHADA: {linha[11]}""") 
-                if linha[6] == 'S' or linha[7] == 'S': 
-                    if linha[8] == 'S' or linha[9] == 'S' or linha[10] == 'S' or linha[11] == 'S':
-                        media_transporte = "Moderada Sustentabilidade"
-                    else:
-                        media_transporte = "Baixa Sustentabilidade"
-                elif linha[8] == 'S' or linha[9] == 'S' or linha[10] == 'S' or linha[11] == 'S':
-                    media_transporte = "Alta Sustentabilidade" 
-
+            \t DATA: {linha[1]}
+            \t Consumo de água: {linha[2]}
+            \t Quantidade de resíduos não reciclaveis gerados (em KG): {linha[3]}
+            \t Nível de resíduos reciclados no total (em %): {linha[4]}
+            \t Consumo de energia: {linha[5]}
+            \t Uso do Transporte - CARRO: {linha[6]}
+            \t Uso do Transporte - CARONA COMPARTILHADA: {linha[7]}
+            \t Uso do Transporte - BICICLETA: {linha[8]}
+            \t Uso do Transporte - TRANSPORTE PÚBLICO: {linha[9]}
+            \t Uso do Transporte - CARRO ELÉTRICO: {linha[10]}
+            \t Uso do Transporte - CAMINHADA: {linha[11]}""") 
+                
+            tecle= input('>>ENTER<<')
+        
         case 5: #LISTAR MÉDIA\n
+
+            id = int(input('Digite o ID que você deseja consultar sua média de sustentabilidade: '))
+            cursor.execute("SELECT * FROM sustentabilidade WHERE ID = %s", (id,))
+            resultado = cursor.fetchall()
+
+            for linha in resultado:
+                if linha[6] == 'S' or linha[7] == 'S':
+                    if linha[8] == 'S' or linha[9] == 'S' or linha[10] == 'S' or linha[11] == 'S':
+                        UT_RESULTADO = "Moderada Sustentabilidade"
+                    else:
+                        UT_RESULTADO = "Baixa Sustentabilidade"
+                elif linha[8] == 'S' or linha[9] == 'S' or linha[10] == 'S' or linha[11] == 'S':
+                    UT_RESULTADO = "Alta Sustentabilidade"
+                else:
+                    UT_RESULTADO = "Baixa Sustentabilidade"
+
+                cursor.execute("""INSERT INTO resultados (ID, DATA_, CA_RESULTADO, NR_RESULTADO, CE_RESULTADO, UT_RESULTADO)
+                      VALUES (%s, %s, %s, %s, %s, %s)""",
+                   (linha[0], linha[1], linha[2], linha[3], linha[5], UT_RESULTADO))
+                #MS_RESULTADO
+
+                conexao.commit()
+
             cursor.execute("SELECT * FROM sustentabilidade")
             sustentabilidade = cursor.fetchall()
             for linha in sustentabilidade:
@@ -175,31 +187,38 @@ while programaAtivo:
                 soma_nrp += linha[4]
                 soma_nrq += linha[3]
                 num_registro += 1
+
             cursor.execute("SELECT * FROM resultados")
             resultado = cursor.fetchall()
+
             print("TABELA RESULTADOS:")
             for linha in resultado:
                 print(f"""\n 
-            ID:{linha[0]}
-            \t DATA_:{linha[1]}
-            \t CA_RESULTADO: {linha[2]}
-            \t NR_RESULTADO: {linha[3]}
-            \t CE_RESULTADO:{linha[4]}
-            \t UT_RESULTADO:{linha[5]}""")       
-            print(f"\nMÉDIAS DE REGISTROS:\nCA_RESULTADO: {soma_ca / num_registro : .1f}\nNR_QUANTIDADE: {soma_nrq / num_registro : .1f}\nNR_PORCENTAGEM: {soma_nrp / num_registro : .1f}\nCE_GASTO: {soma_ce / num_registro : .1f}")
+            ID:\t{linha[0]}
+            \t DATA:\t{linha[1]}
+            \t Consumo de água - nível de média: \t{linha[2]}
+            \t Resíduos reciclados - nível de média: \t{linha[3]}
+            \t Consumo de energia - nível de média:\t{linha[4]}
+            \t Uso de Transporte - nível de média:\t{linha[5]}""")       
+            print(f"""\n\tMÉDIAS DE REGISTROS:\n
+                Consumo de água - nível de sustentabilidade: \t\t{soma_ca / num_registro : .1f}
+                Resíduos não reciclados(KG) - nível de sustentabilidade:{soma_nrq / num_registro : .1f}
+                Resíduos reciclados - nível de sustentabilidade: \t{soma_nrp / num_registro : .1f}
+                Consumo de energia - nível de sustentabilidade: \t{soma_ce / num_registro : .1f}""")
+            #FALTA A MÉDIA FINAL DO DIA = MS_RESULTADO
+
+            #delete na tabela p/ quando for fazer a consulta dnv só exibir o id q a gnt quer, mas não sei como vai ficar a média... 
+            # essa média seria por tipo mês? pq se sim, apaga isso de delete e aparece TODOS os registros da tabela resultados q foi consultado
+            # e faz o calculo da media, se não, nem precisa ter, MAS como esse case é pra média, teria q tirar o aux pra puxar todos os IDs 
+            #da tabela sustentabilidade... não sei 
+            cursor.execute("delete from resultados")
+            conexao.commit()
+
+            tecle= input('>>ENTER<<')
+            
         case 6:
             programaAtivo = False
             cursor.close()
             conexao.close()
             print (f'''conexão encerrada! \nObrigada por atualizar a tabela!''')
             break
-
-'''# Exibir relatório
-print("\n--- Relatório de Sustentabilidade ---")
-print(f"Data: {DATA_}")
-print(f"Consumo de água: {CA_RESULTADO}")
-print(f"Consumo de energia: {CE_RESULTADO}")
-print(f"Geração de resíduos: {NIVEL_NR_PORCENTAGEM}")
-print(f"Uso de transporte: {NIVEL_TRANSPORTE}")
-print("------------------------------------")
-'''
