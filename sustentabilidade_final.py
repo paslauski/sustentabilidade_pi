@@ -3,13 +3,19 @@ import mysql.connector
 programaAtivo = True
 
 conexao = mysql.connector.connect(
-host="BD-ACD", 
-user="BD170225416", 
-password="Yyqdk4", 
-database="BD170225416"
+host="", 
+user="", 
+password="", 
+database=""
 )
 cursor = conexao.cursor()
 print("Conectado com sucesso!")
+
+soma_ca = 0
+soma_ce = 0
+soma_nrp = 0
+soma_nrq = 0
+num_registro = 0
 
 while programaAtivo:
     menu = int(input(f'''
@@ -95,10 +101,14 @@ while programaAtivo:
             cursor.execute(("""INSERT INTO sustentabilidade 
             (DATA_, CA_GASTO, NR_QUANTIDADE, NR_PORCENTAGEM, CE_GASTO,
             UT_CARRO, UT_CARONA_COMPARTILHADA, UT_BICICLETA, UT_TRANSPORTE_PUBLICO, UT_CARRO_ELETRICO, 
-            UT_CAMINHADA, NIVEL_CA, NIVEL_CE, NIVEL_NR_PORCENTAGEM, NIVEL_TRANSPORTE)
-            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s) """), 
+            UT_CAMINHADA)
+            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s) """), 
             (DATA_, CA_GASTO, NR_QUANTIDADE, NR_PORCENTAGEM, CE_GASTO, UT_CARRO, UT_CARONA_COMPARTILHADA, UT_BICICLETA,
-            UT_TRANSPORTE_PUBLICO, UT_CARRO_ELETRICO, UT_CAMINHADA, CA_RESULTADO, CE_RESULTADO, NIVEL_NR_PORCENTAGEM, NIVEL_TRANSPORTE))
+            UT_TRANSPORTE_PUBLICO, UT_CARRO_ELETRICO, UT_CAMINHADA))
+            cursor.execute(("""INSERT INTO  resultados
+                            (DATA_, CA_RESULTADO, NR_RESULTADO, CE_RESULTADO, UT_RESULTADO)
+                            VALUES(%s, %s, %s, %s, %s)"""),
+            (DATA_, CA_RESULTADO, NIVEL_NR_PORCENTAGEM, CE_RESULTADO, NIVEL_TRANSPORTE))
             conexao.commit()
             print('Dados inseridos com sucesso!')
         case 2:#DELETAR ALGUM DADO POR ID
@@ -118,18 +128,19 @@ while programaAtivo:
                     print(f"\no registro com ID {id_excluir} não existe na tabela!")
                 
                 #mostra tudo dnv
-                deletar = int(input('\nDeseja apagar algum outro dado? \n tecle = S para >>>SIM<<   \t tecle = N para >>> NÃO<<:')).upper()
+                deletar = input('\nDeseja apagar algum outro dado? \n tecle = S para >>>SIM<<   \t tecle = N para >>> NÃO<<:').upper()
                 if deletar != 'S' and deletar != 'N':
                     print('Você saiu da função de deletar dado!')
                     deletar=False
-            break
+                break
 
         case 3:#ALTERAR DADO INSERIDO\n
-
+            pass
         case 4:#LISTA TABELA POR ID
+            aux = int(input('Digite o ID que você deseja pesquisar: '))
             print("\nTABELA SUSTENTABILIDADE:")
             #tabela sustentabilidade
-            cursor.execute("SELECT * FROM sustentabilidade")
+            cursor.execute("SELECT * FROM sustentabilidade WHERE ID = %s",(aux,))
             resultado = cursor.fetchall()
             num_registro = len(resultado)
 
@@ -146,11 +157,7 @@ while programaAtivo:
             \t UT_BICICLETA: {linha[8]}
             \t UT_TRANSPORTE_PUBLICO: {linha[9]}
             \t UT_CARRO_ELETRICO: {linha[10]}
-            \t UT_CAMINHADA: {linha[11]}""")
-                soma_ca += linha[2]
-                soma_nrq += linha[3]
-                soma_nrp += linha[4]
-                soma_ce += linha[5]    
+            \t UT_CAMINHADA: {linha[11]}""") 
                 if linha[6] == 'S' or linha[7] == 'S': 
                     if linha[8] == 'S' or linha[9] == 'S' or linha[10] == 'S' or linha[11] == 'S':
                         media_transporte = "Moderada Sustentabilidade"
@@ -160,9 +167,16 @@ while programaAtivo:
                     media_transporte = "Alta Sustentabilidade" 
 
         case 5: #LISTAR MÉDIA\n
+            cursor.execute("SELECT * FROM sustentabilidade")
+            sustentabilidade = cursor.fetchall()
+            for linha in sustentabilidade:
+                soma_ca += linha[2]
+                soma_ce += linha[5]
+                soma_nrp += linha[4]
+                soma_nrq += linha[3]
+                num_registro += 1
             cursor.execute("SELECT * FROM resultados")
             resultado = cursor.fetchall()
-
             print("TABELA RESULTADOS:")
             for linha in resultado:
                 print(f"""\n 
@@ -171,9 +185,8 @@ while programaAtivo:
             \t CA_RESULTADO: {linha[2]}
             \t NR_RESULTADO: {linha[3]}
             \t CE_RESULTADO:{linha[4]}
-            \t UT_RESULTADO:{linha[5]}""")        
-
-            print(f"\nMÉDIAS DE REGISTROS:\nCA_RESULTADO: {soma_ca / num_registro : .1f}\nNR_QUANTIDADE: {soma_nrq / num_registro : .1f}\nNR_PORCENTAGEM: {soma_nrp / num_registro : .1f}\nCE_GASTO: {soma_ce / num_registro : .1f}\nUT_RESULTADO: {media_transporte}")
+            \t UT_RESULTADO:{linha[5]}""")       
+            print(f"\nMÉDIAS DE REGISTROS:\nCA_RESULTADO: {soma_ca / num_registro : .1f}\nNR_QUANTIDADE: {soma_nrq / num_registro : .1f}\nNR_PORCENTAGEM: {soma_nrp / num_registro : .1f}\nCE_GASTO: {soma_ce / num_registro : .1f}")
         case 6:
             programaAtivo = False
             cursor.close()
@@ -181,7 +194,7 @@ while programaAtivo:
             print (f'''conexão encerrada! \nObrigada por atualizar a tabela!''')
             break
 
-# Exibir relatório
+'''# Exibir relatório
 print("\n--- Relatório de Sustentabilidade ---")
 print(f"Data: {DATA_}")
 print(f"Consumo de água: {CA_RESULTADO}")
@@ -189,3 +202,4 @@ print(f"Consumo de energia: {CE_RESULTADO}")
 print(f"Geração de resíduos: {NIVEL_NR_PORCENTAGEM}")
 print(f"Uso de transporte: {NIVEL_TRANSPORTE}")
 print("------------------------------------")
+'''
