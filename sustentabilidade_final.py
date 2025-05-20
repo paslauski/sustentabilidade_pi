@@ -17,25 +17,33 @@ soma_nrp = 0
 soma_nrq = 0
 num_registro = 0
 
+def pausar():
+    input("\nPressione [Enter] para continuar...")
+
 while programaAtivo:
-    menu = int(input(f'''
-        1 ->  INSERIR REGISTO\n
-        2 ->  DELETAR ALGUM DADO POR ID\n
-        3 ->  ALTERAR DADO INSERIDO\n
-        4 ->  LISTA TABELA POR ID\n
-        5 ->  LISTAR MÉDIA\n
-        6 ->   SAIR \n'''))
+    print("""
+    ╔══════════════════════════════════════════════════╗
+    ║                    MENU PRINCIPAL                ║
+    ╠══════════════════════════════════════════════════╣
+    ║  1 ▸ Inserir registro                            ║
+    ║  2 ▸ Deletar dado por ID                         ║
+    ║  3 ▸ Alterar dado inserido                       ║
+    ║  4 ▸ Listar tabelas                              ║
+    ║  5 ▸ Listar média                                ║
+    ║  6 ▸ Sair                                        ║
+    ╚══════════════════════════════════════════════════╝
+    """)
+    menu = int(input("Escolha uma opção (1-6): "))
     while menu != 1 and menu != 2 and menu != 3 and menu != 4 and menu != 5 and menu != 6:
-        menu = int(input(f'''Função fora do escopo! Digite uma função válida:\n
-        1 ->  INSERIR REGISTO\n
-        2 ->  DELETAR ALGUM DADO POR ID\n
-        3 ->  ALTERAR DADO INSERIDO\n
-        4 ->  LISTA TABELA POR ID\n
-        5 ->  LISTAR MÉDIA\n
-        6 ->   SAIR \n'''))
+        menu = int(input("Escolha uma opção válida! (1-6)"))
     # Coletando os dados do usuário
     match menu:
         case 1: #inserir
+            print("""
+    ╔══════════════════════════════════════════════════╗
+    ║                  INSERIR REGISTRO                ║
+    ╚══════════════════════════════════════════════════╝ """)
+            pausar()
             DATA_ = input("Qual é a data (AAAA-MM-DD)? ")
             CA_GASTO = float(input("Quantos litros de água você consumiu hoje? "))
             CE_GASTO = float(input("Quantos kWh de energia elétrica você consumiu hoje? "))
@@ -112,6 +120,11 @@ while programaAtivo:
             conexao.commit()
             print('Dados inseridos com sucesso!')
         case 2:#DELETAR ALGUM DADO POR ID
+            print("""
+    ╔══════════════════════════════════════════════════╗
+    ║               DELETAR DADO POR ID                ║
+    ╚══════════════════════════════════════════════════╝ """)
+            pausar()
 
             deletar=True
             while deletar:
@@ -136,6 +149,11 @@ while programaAtivo:
                 break
 
         case 3:#ALTERAR DADO INSERIDO\n
+            print("""
+    ╔══════════════════════════════════════════════════╗
+    ║             ALTERAR DADO INSERIDO                ║
+    ╚══════════════════════════════════════════════════╝ """)
+            pausar()
             aux = int(input('Digite o ID que você alterar: '))
             cursor.execute("SELECT *  FROM sustentabilidade WHERE ID = %s", (aux,))
             existe = cursor.fetchone()
@@ -214,9 +232,14 @@ while programaAtivo:
             else:
                 print(f'\nID não encontrado!')
         case 4:#LISTA TABELA POR ID
+            print("""
+    ╔══════════════════════════════════════════════════╗
+    ║                  LISTAR TABELAS                  ║
+    ╚══════════════════════════════════════════════════╝ """)
+            pausar()
             print("\nTABELA SUSTENTABILIDADE:")
             #tabela sustentabilidade
-            cursor.execute("SELECT * FROM sustentabilidade WHERE ID = %s",(aux,))
+            cursor.execute("SELECT * FROM sustentabilidade")
             resultado = cursor.fetchall()
             num_registro = len(resultado)
 
@@ -241,8 +264,22 @@ while programaAtivo:
                         media_transporte = "Baixa Sustentabilidade"
                 elif linha[8] == 'S' or linha[9] == 'S' or linha[10] == 'S' or linha[11] == 'S':
                     media_transporte = "Alta Sustentabilidade" 
-
+            print("\nTABELA RESULTADOS: ")
+            cursor.execute("SELECT * FROM resultados")
+            resultado = cursor.fetchall()
+            for linha in resultado:
+                print(f"""\n 
+            DATA_:{linha[0]}
+            \t CA_RESULTADO: {linha[1]}
+            \t NR_RESULTADO: {linha[2]}
+            \t CE_RESULTADO:{linha[3]}
+            \t UT_RESULTADO:{linha[4]}""")       
         case 5: #LISTAR MÉDIA\n
+            print("""
+    ╔══════════════════════════════════════════════════╗
+    ║                  LISTAR MÉDIA                    ║
+    ╚══════════════════════════════════════════════════╝ """)
+            pausar()
             cursor.execute("SELECT * FROM sustentabilidade")
             sustentabilidade = cursor.fetchall()
             for linha in sustentabilidade:
@@ -251,31 +288,11 @@ while programaAtivo:
                 soma_nrp += linha[4]
                 soma_nrq += linha[3]
                 num_registro += 1
-            cursor.execute("SELECT * FROM resultados")
-            resultado = cursor.fetchall()
-            print("TABELA RESULTADOS:")
-            for linha in resultado:
-                print(f"""\n 
-            ID:{linha[0]}
-            \t DATA_:{linha[1]}
-            \t CA_RESULTADO: {linha[2]}
-            \t NR_RESULTADO: {linha[3]}
-            \t CE_RESULTADO:{linha[4]}
-            \t UT_RESULTADO:{linha[5]}""")       
+            resultado = cursor.fetchall()     
             print(f"\nMÉDIAS DE REGISTROS:\nCA_RESULTADO: {soma_ca / num_registro : .1f}\nNR_QUANTIDADE: {soma_nrq / num_registro : .1f}\nNR_PORCENTAGEM: {soma_nrp / num_registro : .1f}\nCE_GASTO: {soma_ce / num_registro : .1f}")
         case 6:
             programaAtivo = False
             cursor.close()
             conexao.close()
-            print (f'''conexão encerrada! \nObrigada por atualizar a tabela!''')
+            print (f'''Conexão encerrada! \nObrigada por atualizar a tabela!''')
             break
-
-'''# Exibir relatório
-print("\n--- Relatório de Sustentabilidade ---")
-print(f"Data: {DATA_}")
-print(f"Consumo de água: {CA_RESULTADO}")
-print(f"Consumo de energia: {CE_RESULTADO}")
-print(f"Geração de resíduos: {NIVEL_NR_PORCENTAGEM}")
-print(f"Uso de transporte: {NIVEL_TRANSPORTE}")
-print("------------------------------------")
-'''
