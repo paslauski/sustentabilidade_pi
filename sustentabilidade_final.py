@@ -3,10 +3,10 @@ import mysql.connector
 programaAtivo = True
 
 conexao = mysql.connector.connect(
-host="", 
-user="", 
-password="", 
-database=""
+host="127.0.0.1", 
+user="root", 
+password="Iqpqy2", 
+database="PI"
 )
 cursor = conexao.cursor()
 print("Conectado com sucesso!")
@@ -121,6 +121,7 @@ while programaAtivo:
 
                 if existe:
                     cursor.execute("DELETE FROM sustentabilidade WHERE ID = %s", (id_excluir,))
+                    cursor.execute("DELETE FROM resultados WHERE ID = %s", (id_excluir,))
                     conexao.commit()
                     print(f"\no registro com ID {id_excluir} foi excluido com sucesso!")
 
@@ -135,7 +136,83 @@ while programaAtivo:
                 break
 
         case 3:#ALTERAR DADO INSERIDO\n
-            pass
+            aux = int(input('Digite o ID que você alterar: '))
+            cursor.execute("SELECT *  FROM sustentabilidade WHERE ID = %s", (aux,))
+            existe = cursor.fetchone()
+            if existe:
+                DATA_ = input("Qual é a data (AAAA-MM-DD)? ")
+                CA_GASTO = float(input("Quantos litros de água você consumiu hoje? "))
+                CE_GASTO = float(input("Quantos kWh de energia elétrica você consumiu hoje? "))
+                NR_QUANTIDADE =float(input("Quantos KG de resíduos não reciclaveis você gerou hoje? "))
+                NR_PORCENTAGEM = float(input("Qual a porcentagem de resíduos reciclados no total (em %)? "))
+
+                #Entrada de múltiplos meios de transporte atualizada
+                print(f"\nEscolha os meios de transporte utilizados hoje: Responda apenas com S ou N.")
+                UT_CARRO = input(f"\t1. Carro (combustível fósseis) ").upper()
+                while UT_CARRO != 'S' and UT_CARRO != 'N':
+                    UT_CARRO = input(f"\tDigite apenas S ou N. ").upper()
+                UT_CARONA_COMPARTILHADA = input(f"\t2. Carona compartilhada ").upper()
+                while UT_CARONA_COMPARTILHADA != 'S' and UT_CARONA_COMPARTILHADA != 'N':
+                    UT_CARONA_COMPARTILHADA = input(f"\tDigite apenas S ou N. ").upper()
+                UT_BICICLETA = input(f"\t3. Bicicleta ").upper()
+                while UT_BICICLETA != 'S' and UT_BICICLETA != 'N':
+                    UT_BICICLETA = input(f"\tDigite apenas S ou N. ").upper()
+                UT_TRANSPORTE_PUBLICO = input(f"\t4. Transporte público (ônibus, metrô, trem) ").upper()
+                while UT_TRANSPORTE_PUBLICO != 'S' and UT_TRANSPORTE_PUBLICO != 'N': # not in ['S', 'N']:
+                    UT_TRANSPORTE_PUBLICO = input(f"\tDigite apenas S ou N. ").upper()
+                UT_CARRO_ELETRICO = input(f"\t5. Carro elétrico ").upper()
+                while UT_CARRO_ELETRICO != 'S' and UT_CARRO_ELETRICO != 'N':
+                    UT_CARRO_ELETRICO = input(f"\tDigite apenas S ou N. ").upper()
+                UT_CAMINHADA = input(f"\t6. Caminhada ").upper()
+                while  UT_CAMINHADA != 'S' and  UT_CAMINHADA != 'N':
+                    UT_CAMINHADA = input(f"\tDigite apenas S ou N. ").upper()
+
+                # Classificação de consumo de agua
+                if CA_GASTO < 150:
+                    CA_RESULTADO = "Alta Sustentabilidade"
+                elif 150 <= CA_GASTO <= 200:
+                    CA_RESULTADO = "Moderada Sustentabilidade"
+                else:
+                    CA_RESULTADO = "Baixa Sustentabilidade"
+
+                # Classificação de consumo de energia
+                if CE_GASTO < 5:
+                    CE_RESULTADO = "Alta Sustentabilidade"
+                elif 5 <= CE_GASTO <= 10:
+                    CE_RESULTADO = "Moderada Sustentabilidade"
+                else:
+                    CE_RESULTADO = "Baixa Sustentabilidade"
+
+                # Classificação de resíduos recicláveis
+                if NR_PORCENTAGEM > 50:
+                    NIVEL_NR_PORCENTAGEM = "Alta Sustentabilidade"
+                elif 20 <= NR_PORCENTAGEM <= 50:
+                    NIVEL_NR_PORCENTAGEM = "Moderada Sustentabilidade"
+                else:
+                    NIVEL_NR_PORCENTAGEM = "Baixa Sustentabilidade"
+
+                # Classificação do transporte
+                NIVEL_TRANSPORTE = "Baixa Sustentabilidade"
+                if UT_CARRO == 'S' or UT_CARONA_COMPARTILHADA == 'S':
+                    if UT_BICICLETA == 'S' or UT_TRANSPORTE_PUBLICO == 'S' or UT_CARRO_ELETRICO == 'S' or UT_CAMINHADA == 'S':
+                        NIVEL_TRANSPORTE = "Moderada Sustentabilidade"
+                    else:
+                        NIVEL_TRANSPORTE = "Baixa Sustentabilidade"
+                elif UT_BICICLETA == 'S' or UT_TRANSPORTE_PUBLICO == 'S' or UT_CARRO_ELETRICO == 'S'or UT_CAMINHADA == 'S':
+                    NIVEL_TRANSPORTE = "Alta Sustentabilidade"
+                cursor.execute("UPDATE sustentabilidade SET DATA_ = %s, CA_GASTO = %s, NR_QUANTIDADE = %s, NR_PORCENTAGEM = %s, CE_GASTO = %s,UT_CARRO = %s, UT_CARONA_COMPARTILHADA = %s, UT_BICICLETA = %s, UT_TRANSPORTE_PUBLICO = %s, UT_CARRO_ELETRICO = %s, UT_CAMINHADA = %s WHERE ID = %s", (DATA_, CA_GASTO, NR_QUANTIDADE, NR_PORCENTAGEM, CE_GASTO, UT_CARRO, UT_CARONA_COMPARTILHADA, UT_BICICLETA, UT_TRANSPORTE_PUBLICO, UT_CARRO_ELETRICO, UT_CAMINHADA, aux))
+                cursor.execute(("""UPDATE resultados
+                                SET DATA_ = %s, 
+                                CA_RESULTADO = %s, 
+                                NR_RESULTADO = %s, 
+                                CE_RESULTADO = %s, 
+                                UT_RESULTADO = %s
+                                WHERE ID = %s"""),
+                                (DATA_, CA_RESULTADO, NIVEL_NR_PORCENTAGEM, CE_RESULTADO, NIVEL_TRANSPORTE, aux))
+                conexao.commit()
+                print(f'\nO ID {aux} foi alterado com sucesso!')
+            else:
+                print(f'\nID não encontrado!')
         case 4:#LISTA TABELA POR ID
             aux = int(input('Digite o ID que você deseja pesquisar: '))
             print("\nTABELA SUSTENTABILIDADE:")
