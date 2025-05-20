@@ -214,7 +214,6 @@ while programaAtivo:
             else:
                 print(f'\nID não encontrado!')
         case 4:#LISTA TABELA POR ID
-            aux = int(input('Digite o ID que você deseja pesquisar: '))
             print("\nTABELA SUSTENTABILIDADE:")
             #tabela sustentabilidade
             cursor.execute("SELECT * FROM sustentabilidade WHERE ID = %s",(aux,))
