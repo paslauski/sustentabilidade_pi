@@ -1,11 +1,11 @@
 create database PI;
 use PI;
-drop database PI;
+-- drop database PI;
 show tables;
-select * from sustentabilidade;
-select * from resultados;
-drop tables sustentabilidade, resultados;
-drop table resultados;
+-- select * from sustentabilidade;
+-- select * from resultados;
+-- drop tables sustentabilidade, resultados;
+-- drop table resultados;
 create table sustentabilidade(
 ID int auto_increment primary key,
 DATA_ date not null,
@@ -29,12 +29,10 @@ CE_RESULTADO varchar(50),
 UT_RESULTADO varchar(50)
 );
 
-#alter table resultados
-#add constraint fk_data_resultado
-#foreign key (DATA_) references sustentabilidade(DATA_);
+ALTER TABLE resultados
+ADD COLUMN ID INT PRIMARY KEY AUTO_INCREMENT FIRST;
 
+ALTER TABLE resultados
+ADD CONSTRAINT fk_id_sustentabilidade
+FOREIGN KEY (ID) REFERENCES sustentabilidade(ID);
 
-
-
-
-insert into sustentabilidade values(1, '2025-12-02', 50, 5, 5, 5, 'S', 'S', 'S', 'S', 'S', 'S','S');
