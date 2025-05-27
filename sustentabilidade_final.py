@@ -1,4 +1,6 @@
 import mysql.connector
+#concertar descriptografia palavra impar
+#mostrar classificacao da media
 
 MATRIZ_CHAVE = [[3, 5], [1, 2]]
 DIMENSAO_MATRIZ = len(MATRIZ_CHAVE)
@@ -21,15 +23,24 @@ def numero_para_caractere(valor_num):
     elif valor_num_mod == 0:
         return 'Z'
     return '' 
-
 def preparar_texto_para_hill(texto, tamanho_bloco):
-    texto_limpo = "".join([char for char in str(texto).upper() if 'A' <= char <= 'Z'])
-    
-    resto = len(texto_limpo) % tamanho_bloco
-    if resto != 0:
-        preenchimento_necessario = tamanho_bloco - resto
-        texto_limpo += 'X' * preenchimento_necessario
-    return texto_limpo
+    texto_processado = "".join([char for char in str(texto).upper() if 'A' <= char <= 'Z'])
+
+    if not texto_processado:
+        return ""
+
+    if len(texto_processado) % 2 != 0:
+        texto_processado = texto_processado[:-1]
+
+    if not texto_processado:
+        texto_processado = 'X' * tamanho_bloco
+    else:
+        resto_final = len(texto_processado) % tamanho_bloco
+        if resto_final != 0:
+            preenchimento_necessario = tamanho_bloco - resto_final
+            texto_processado += 'X' * preenchimento_necessario
+            
+    return texto_processado
 
 def criptografar_texto_hill(texto_plano, matriz_chave_usada, dimensao_matriz_usada, modulo_usado):
     if not texto_plano: 
@@ -84,7 +95,7 @@ programaAtivo = True
 conexao = mysql.connector.connect(
 host="127.0.0.1", 
 user="root", 
-password="lqpqy2", 
+password="Iqpqy2", 
 database="PI"
 )
 cursor = conexao.cursor()
@@ -153,24 +164,24 @@ while programaAtivo:
             UT_CAMINHADA = input(f"\t6. Caminhada ").upper()
             while  UT_CAMINHADA != 'S' and  UT_CAMINHADA != 'N': UT_CAMINHADA = input(f"\tDigite apenas S ou N. ").upper()
 
-            if CA_GASTO < 150: CA_RESULTADO_ORIGINAL = "Alta Sustentabilidade"
-            elif 150 <= CA_GASTO <= 200: CA_RESULTADO_ORIGINAL = "Moderada Sustentabilidade"
-            else: CA_RESULTADO_ORIGINAL = "Baixa Sustentabilidade"
+            if CA_GASTO < 150: CA_RESULTADO_ORIGINAL = "Alta"
+            elif 150 <= CA_GASTO <= 200: CA_RESULTADO_ORIGINAL = "Moderada"
+            else: CA_RESULTADO_ORIGINAL = "Baixa"
 
-            if CE_GASTO < 5: CE_RESULTADO_ORIGINAL = "Alta Sustentabilidade"
-            elif 5 <= CE_GASTO <= 10: CE_RESULTADO_ORIGINAL = "Moderada Sustentabilidade"
-            else: CE_RESULTADO_ORIGINAL = "Baixa Sustentabilidade"
+            if CE_GASTO < 5: CE_RESULTADO_ORIGINAL = "Alta"
+            elif 5 <= CE_GASTO <= 10: CE_RESULTADO_ORIGINAL = "Moderada"
+            else: CE_RESULTADO_ORIGINAL = "Baixa"
 
-            if NR_PORCENTAGEM > 50: NIVEL_NR_PORCENTAGEM_ORIGINAL = "Alta Sustentabilidade"
-            elif 20 <= NR_PORCENTAGEM <= 50: NIVEL_NR_PORCENTAGEM_ORIGINAL = "Moderada Sustentabilidade"
-            else: NIVEL_NR_PORCENTAGEM_ORIGINAL = "Baixa Sustentabilidade"
+            if NR_PORCENTAGEM > 50: NIVEL_NR_PORCENTAGEM_ORIGINAL = "Alta"
+            elif 20 <= NR_PORCENTAGEM <= 50: NIVEL_NR_PORCENTAGEM_ORIGINAL = "Moderada"
+            else: NIVEL_NR_PORCENTAGEM_ORIGINAL = "Baixa"
 
-            NIVEL_TRANSPORTE_ORIGINAL = "Baixa Sustentabilidade"
+            NIVEL_TRANSPORTE_ORIGINAL = "Baixa"
             if UT_CARRO == 'S' or UT_CARONA_COMPARTILHADA == 'S':
                 if UT_BICICLETA == 'S' or UT_TRANSPORTE_PUBLICO == 'S' or UT_CARRO_ELETRICO == 'S' or UT_CAMINHADA == 'S':
-                    NIVEL_TRANSPORTE_ORIGINAL = "Moderada Sustentabilidade"
+                    NIVEL_TRANSPORTE_ORIGINAL = "Moderada"
             elif UT_BICICLETA == 'S' or UT_TRANSPORTE_PUBLICO == 'S' or UT_CARRO_ELETRICO == 'S'or UT_CAMINHADA == 'S':
-                NIVEL_TRANSPORTE_ORIGINAL = "Alta Sustentabilidade"
+                NIVEL_TRANSPORTE_ORIGINAL = "Alta"
             
             cursor.execute(("""INSERT INTO sustentabilidade 
             (DATA_, CA_GASTO, NR_QUANTIDADE, NR_PORCENTAGEM, CE_GASTO,
@@ -244,6 +255,16 @@ while programaAtivo:
                         print(f"\nEscolha os meios de transporte utilizados hoje: Responda apenas com S ou N.")
                         UT_CARRO = input(f"\t1. Carro (combustível fósseis) ").upper()
                         while UT_CARRO != 'S' and UT_CARRO != 'N': UT_CARRO = input(f"\tDigite apenas S ou N. ").upper()
+                        UT_CARONA_COMPARTILHADA = input(f"\t2. Carona compartilhada ").upper()
+                        while UT_CARONA_COMPARTILHADA != 'S' and UT_CARONA_COMPARTILHADA != 'N': UT_CARONA_COMPARTILHADA = input(f"\tDigite apenas S ou N. ").upper()
+                        UT_BICICLETA = input(f"\t3. Bicicleta ").upper()
+                        while UT_BICICLETA != 'S' and UT_BICICLETA != 'N': UT_BICICLETA = input(f"\tDigite apenas S ou N. ").upper()
+                        UT_TRANSPORTE_PUBLICO = input(f"\t4. Transporte público (ônibus, metrô, trem) ").upper()
+                        while UT_TRANSPORTE_PUBLICO != 'S' and UT_TRANSPORTE_PUBLICO != 'N': UT_TRANSPORTE_PUBLICO = input(f"\tDigite apenas S ou N. ").upper()
+                        UT_CARRO_ELETRICO = input(f"\t5. Carro elétrico ").upper()
+                        while UT_CARRO_ELETRICO != 'S' and UT_CARRO_ELETRICO != 'N': UT_CARRO_ELETRICO = input(f"\tDigite apenas S ou N. ").upper()
+                        UT_CAMINHADA = input(f"\t6. Caminhada ").upper()
+                        while  UT_CAMINHADA != 'S' and  UT_CAMINHADA != 'N': UT_CAMINHADA = input(f"\tDigite apenas S ou N. ").upper()
                         if CA_GASTO < 150: CA_RESULTADO_ORIGINAL = "Alta Sustentabilidade"
                         elif 150 <= CA_GASTO <= 200: CA_RESULTADO_ORIGINAL = "Moderada Sustentabilidade"
                         else: CA_RESULTADO_ORIGINAL = "Baixa Sustentabilidade"
@@ -263,8 +284,8 @@ while programaAtivo:
                         elif UT_BICICLETA == 'S' or UT_TRANSPORTE_PUBLICO == 'S' or UT_CARRO_ELETRICO == 'S'or UT_CAMINHADA == 'S':
                              NIVEL_TRANSPORTE_ORIGINAL = "Alta Sustentabilidade"
 
-                        cursor.execute("UPDATE sustentabilidade SET DATA_ = %s, CA_GASTO = %s, NR_QUANTIDADE = %s, NR_PORCENTAGEM = %s, CE_GASTO = %s,UT_CARRO = %s, UT_CARONA_COMPARTILHADA = %s, UT_BICICLETA = %s, UT_TRANSPORTE_PUBLICO = %s, UT_CARRO_ELETRICO = %s, UT_CAMINHADA = %s WHERE ID = %s", 
-                                       (DATA_, CA_GASTO, NR_QUANTIDADE, NR_PORCENTAGEM, CE_GASTO, UT_CARRO, "S", "N","S","N","S", aux))
+                        cursor.execute("UPDATE sustentabilidade SET DATA_ = %s, CA_GASTO = %s, NR_QUANTIDADE = %s, NR_PORCENTAGEM = %s, CE_GASTO = %s, UT_CARRO = %s, UT_CARONA_COMPARTILHADA = %s, UT_BICICLETA = %s, UT_TRANSPORTE_PUBLICO = %s, UT_CARRO_ELETRICO = %s, UT_CAMINHADA = %s WHERE ID = %s",
+                                     (DATA_, CA_GASTO, NR_QUANTIDADE, NR_PORCENTAGEM, CE_GASTO, UT_CARRO, UT_CARONA_COMPARTILHADA, UT_BICICLETA, UT_TRANSPORTE_PUBLICO, UT_CARRO_ELETRICO, UT_CAMINHADA, aux))
                         
                         CA_RESULTADO_CRIPT = criptografar_texto_hill(CA_RESULTADO_ORIGINAL, MATRIZ_CHAVE, DIMENSAO_MATRIZ, MODULO_ALFABETO)
                         NIVEL_NR_PORCENTAGEM_CRIPT = criptografar_texto_hill(NIVEL_NR_PORCENTAGEM_ORIGINAL, MATRIZ_CHAVE, DIMENSAO_MATRIZ, MODULO_ALFABETO)
