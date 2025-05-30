@@ -9,10 +9,10 @@ show tables;
 create table sustentabilidade(
 ID int auto_increment primary key,
 DATA_ date not null,
-CA_GASTO decimal (5,2) not null,
+CA_GASTO decimal (5,3) not null,
 NR_QUANTIDADE int not null,
 NR_PORCENTAGEM int not null,
-CE_GASTO decimal (3,1) not null,
+CE_GASTO decimal (5,3) not null,
 UT_CARRO enum('S', 'N') not null,
 UT_CARONA_COMPARTILHADA enum('S', 'N') not null,
 UT_BICICLETA enum('S', 'N') not null,

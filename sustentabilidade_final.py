@@ -30,6 +30,7 @@ def preparar_texto_para_hill(texto, tamanho_bloco):
         return ""
 
     if len(texto_processado) % 2 != 0:
+        texto_processado = texto_processado + 'W'
         texto_processado = texto_processado[:-1]
 
     if not texto_processado:
@@ -85,18 +86,23 @@ def descriptografar_texto_hill(texto_cifrado, matriz_chave_inversa_usada, dimens
                 valor_soma += bloco[k_elemento] * matriz_chave_inversa_usada[k_elemento][j_coluna]
             segmento_bloco_descriptografado[j_coluna] = valor_soma % modulo_usado
         numeros_descriptografados.extend(segmento_bloco_descriptografado)
-            
+
     texto_descriptografado = "".join([numero_para_caractere(n) for n in numeros_descriptografados])
+
+    if texto_descriptografado.endswith("X"):
+        texto_descriptografado = texto_descriptografado[:-1]
+
     return texto_descriptografado
+
 
 
 programaAtivo = True
 
 conexao = mysql.connector.connect(
-host="127.0.0.1", 
-user="root", 
-password="Iqpqy2", 
-database="PI"
+host="BD-ACD", 
+user="BD170225416", 
+password="Yyqdk4", 
+database="BD170225416" 
 )
 cursor = conexao.cursor()
 print("Conectado com sucesso!")
@@ -265,24 +271,24 @@ while programaAtivo:
                         while UT_CARRO_ELETRICO != 'S' and UT_CARRO_ELETRICO != 'N': UT_CARRO_ELETRICO = input(f"\tDigite apenas S ou N. ").upper()
                         UT_CAMINHADA = input(f"\t6. Caminhada ").upper()
                         while  UT_CAMINHADA != 'S' and  UT_CAMINHADA != 'N': UT_CAMINHADA = input(f"\tDigite apenas S ou N. ").upper()
-                        if CA_GASTO < 150: CA_RESULTADO_ORIGINAL = "Alta Sustentabilidade"
-                        elif 150 <= CA_GASTO <= 200: CA_RESULTADO_ORIGINAL = "Moderada Sustentabilidade"
-                        else: CA_RESULTADO_ORIGINAL = "Baixa Sustentabilidade"
+                        if CA_GASTO < 150: CA_RESULTADO_ORIGINAL = "Alta"
+                        elif 150 <= CA_GASTO <= 200: CA_RESULTADO_ORIGINAL = "Moderada"
+                        else: CA_RESULTADO_ORIGINAL = "Baixa"
 
-                        if CE_GASTO < 5: CE_RESULTADO_ORIGINAL = "Alta Sustentabilidade"
-                        elif 5 <= CE_GASTO <= 10: CE_RESULTADO_ORIGINAL = "Moderada Sustentabilidade"
-                        else: CE_RESULTADO_ORIGINAL = "Baixa Sustentabilidade"
+                        if CE_GASTO < 5: CE_RESULTADO_ORIGINAL = "Alta"
+                        elif 5 <= CE_GASTO <= 10: CE_RESULTADO_ORIGINAL = "Moderada"
+                        else: CE_RESULTADO_ORIGINAL = "Baixa "
 
-                        if NR_PORCENTAGEM > 50: NIVEL_NR_PORCENTAGEM_ORIGINAL = "Alta Sustentabilidade"
-                        elif 20 <= NR_PORCENTAGEM <= 50: NIVEL_NR_PORCENTAGEM_ORIGINAL = "Moderada Sustentabilidade"
-                        else: NIVEL_NR_PORCENTAGEM_ORIGINAL = "Baixa Sustentabilidade"
+                        if NR_PORCENTAGEM > 50: NIVEL_NR_PORCENTAGEM_ORIGINAL = "Alta"
+                        elif 20 <= NR_PORCENTAGEM <= 50: NIVEL_NR_PORCENTAGEM_ORIGINAL = "Moderada"
+                        else: NIVEL_NR_PORCENTAGEM_ORIGINAL = "Baixa"
                         
-                        NIVEL_TRANSPORTE_ORIGINAL = "Baixa Sustentabilidade" 
+                        NIVEL_TRANSPORTE_ORIGINAL = "Baixa" 
                         if UT_CARRO == 'S' or UT_CARONA_COMPARTILHADA == 'S':
                             if UT_BICICLETA == 'S' or UT_TRANSPORTE_PUBLICO == 'S' or UT_CARRO_ELETRICO == 'S' or UT_CAMINHADA == 'S':
-                                NIVEL_TRANSPORTE_ORIGINAL = "Moderada Sustentabilidade"
+                                NIVEL_TRANSPORTE_ORIGINAL = "Moderada"
                         elif UT_BICICLETA == 'S' or UT_TRANSPORTE_PUBLICO == 'S' or UT_CARRO_ELETRICO == 'S'or UT_CAMINHADA == 'S':
-                             NIVEL_TRANSPORTE_ORIGINAL = "Alta Sustentabilidade"
+                             NIVEL_TRANSPORTE_ORIGINAL = "Alta"
 
                         cursor.execute("UPDATE sustentabilidade SET DATA_ = %s, CA_GASTO = %s, NR_QUANTIDADE = %s, NR_PORCENTAGEM = %s, CE_GASTO = %s, UT_CARRO = %s, UT_CARONA_COMPARTILHADA = %s, UT_BICICLETA = %s, UT_TRANSPORTE_PUBLICO = %s, UT_CARRO_ELETRICO = %s, UT_CAMINHADA = %s WHERE ID = %s",
                                      (DATA_, CA_GASTO, NR_QUANTIDADE, NR_PORCENTAGEM, CE_GASTO, UT_CARRO, UT_CARONA_COMPARTILHADA, UT_BICICLETA, UT_TRANSPORTE_PUBLICO, UT_CARRO_ELETRICO, UT_CAMINHADA, aux))
