@@ -99,10 +99,10 @@ def descriptografar_texto_hill(texto_cifrado, matriz_chave_inversa_usada, dimens
 programaAtivo = True
 
 conexao = mysql.connector.connect(
-host="BD-ACD", 
-user="BD170225416", 
-password="Yyqdk4", 
-database="BD170225416" 
+host="localhost", # IP ou hostname do servidor MySQL puc-> BD-ACD   localhost
+user="root", # "login" root
+password="@Isamysql", # senha
+database="PI" # nome do banco (tem que existir) #BD170225416(isa)
 )
 cursor = conexao.cursor()
 print("Conectado com sucesso!")
@@ -120,7 +120,7 @@ def pausar():
 while programaAtivo:
     print("""
     ╔══════════════════════════════════════════════════╗
-    ║                       MENU PRINCIPAL             ║
+    ║                 MENU PRINCIPAL                   ║
     ╠══════════════════════════════════════════════════╣
     ║  1 ▸ Inserir registro                            ║
     ║  2 ▸ Deletar dado por ID                         ║
@@ -147,7 +147,7 @@ while programaAtivo:
         case 1: #inserir
             print("""
     ╔══════════════════════════════════════════════════╗
-    ║                    INSERIR REGISTRO              ║
+    ║                INSERIR REGISTRO                  ║
     ╚══════════════════════════════════════════════════╝ """)
             pausar()
             DATA_ = input("Qual é a data (AAAA-MM-DD)? ")
@@ -212,7 +212,7 @@ while programaAtivo:
         case 2:#DELETAR ALGUM DADO POR ID
             print("""
     ╔══════════════════════════════════════════════════╗
-    ║                   DELETAR DADO POR ID            ║
+    ║                DELETAR DADO POR ID               ║
     ╚══════════════════════════════════════════════════╝ """)
             pausar()
             deletar=True
@@ -241,7 +241,7 @@ while programaAtivo:
         case 3:#ALTERAR DADO INSERIDO
             print("""
     ╔══════════════════════════════════════════════════╗
-    ║                  ALTERAR DADO INSERIDO           ║
+    ║             ALTERAR DADO INSERIDO                ║
     ╚══════════════════════════════════════════════════╝ """)
             pausar()
             alterar = True
@@ -288,10 +288,10 @@ while programaAtivo:
                             if UT_BICICLETA == 'S' or UT_TRANSPORTE_PUBLICO == 'S' or UT_CARRO_ELETRICO == 'S' or UT_CAMINHADA == 'S':
                                 NIVEL_TRANSPORTE_ORIGINAL = "Moderada"
                         elif UT_BICICLETA == 'S' or UT_TRANSPORTE_PUBLICO == 'S' or UT_CARRO_ELETRICO == 'S'or UT_CAMINHADA == 'S':
-                             NIVEL_TRANSPORTE_ORIGINAL = "Alta"
+                            NIVEL_TRANSPORTE_ORIGINAL = "Alta"
 
                         cursor.execute("UPDATE sustentabilidade SET DATA_ = %s, CA_GASTO = %s, NR_QUANTIDADE = %s, NR_PORCENTAGEM = %s, CE_GASTO = %s, UT_CARRO = %s, UT_CARONA_COMPARTILHADA = %s, UT_BICICLETA = %s, UT_TRANSPORTE_PUBLICO = %s, UT_CARRO_ELETRICO = %s, UT_CAMINHADA = %s WHERE ID = %s",
-                                     (DATA_, CA_GASTO, NR_QUANTIDADE, NR_PORCENTAGEM, CE_GASTO, UT_CARRO, UT_CARONA_COMPARTILHADA, UT_BICICLETA, UT_TRANSPORTE_PUBLICO, UT_CARRO_ELETRICO, UT_CAMINHADA, aux))
+                                    (DATA_, CA_GASTO, NR_QUANTIDADE, NR_PORCENTAGEM, CE_GASTO, UT_CARRO, UT_CARONA_COMPARTILHADA, UT_BICICLETA, UT_TRANSPORTE_PUBLICO, UT_CARRO_ELETRICO, UT_CAMINHADA, aux))
                         
                         CA_RESULTADO_CRIPT = criptografar_texto_hill(CA_RESULTADO_ORIGINAL, MATRIZ_CHAVE, DIMENSAO_MATRIZ, MODULO_ALFABETO)
                         NIVEL_NR_PORCENTAGEM_CRIPT = criptografar_texto_hill(NIVEL_NR_PORCENTAGEM_ORIGINAL, MATRIZ_CHAVE, DIMENSAO_MATRIZ, MODULO_ALFABETO)
@@ -319,7 +319,7 @@ while programaAtivo:
         case 4:#LISTA TABELA POR ID
             print("""
     ╔══════════════════════════════════════════════════╗
-    ║                      LISTAR TABELAS              ║
+    ║                 LISTAR TABELAS                   ║
     ╚══════════════════════════════════════════════════╝ """)
             pausar()
             print("\nTABELA SUSTENTABILIDADE:")
@@ -360,7 +360,7 @@ while programaAtivo:
         case 5: #LISTAR MÉDIA
             print("""
     ╔══════════════════════════════════════════════════╗
-    ║                       LISTAR MÉDIA               ║
+    ║                   LISTAR MÉDIA                   ║
     ╚══════════════════════════════════════════════════╝ """)
             pausar()  
             soma_ca_local = 0 
