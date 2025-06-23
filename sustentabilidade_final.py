@@ -22,7 +22,8 @@ def numero_para_caractere(valor_num):
         return chr(valor_num_mod - 1 + ord('A'))
     elif valor_num_mod == 0:
         return 'Z'
-    return '' 
+    return ''
+
 def preparar_texto_para_hill(texto, tamanho_bloco):
     texto_processado = "".join([char for char in str(texto).upper() if 'A' <= char <= 'Z'])
 
@@ -57,11 +58,12 @@ def criptografar_texto_hill(texto_plano, matriz_chave_usada, dimensao_matriz_usa
     for i in range(0, len(texto_numerico), dimensao_matriz_usada):
         bloco = texto_numerico[i:i+dimensao_matriz_usada]
         segmento_bloco_criptografado = [0] * dimensao_matriz_usada
-        for j_coluna in range(dimensao_matriz_usada):
+        for j_linha in range(dimensao_matriz_usada):  # Itera nas linhas da matriz chave
             valor_soma = 0
-            for k_elemento in range(dimensao_matriz_usada):
-                valor_soma += bloco[k_elemento] * matriz_chave_usada[k_elemento][j_coluna]
-            segmento_bloco_criptografado[j_coluna] = valor_soma % modulo_usado
+            for k_elemento in range(dimensao_matriz_usada): # Faz o produto escalar
+                # --- LINHA CORRIGIDA ---
+                valor_soma += matriz_chave_usada[j_linha][k_elemento] * bloco[k_elemento]
+            segmento_bloco_criptografado[j_linha] = valor_soma % modulo_usado
         numeros_criptografados.extend(segmento_bloco_criptografado)
             
     return "".join([numero_para_caractere(n) for n in numeros_criptografados])
@@ -73,36 +75,41 @@ def descriptografar_texto_hill(texto_cifrado, matriz_chave_inversa_usada, dimens
     texto_cifrado_str = str(texto_cifrado) 
     cifra_numerica = [caractere_para_numero(c) for c in texto_cifrado_str]
     
+    # Adicionada uma verificação para evitar erros com textos que não são múltiplos do bloco
     if len(cifra_numerica) % dimensao_matriz_usada != 0:
-        return texto_cifrado_str 
+        # Tenta preencher se o tamanho for ímpar, um cenário comum
+        if len(cifra_numerica) % 2 != 0:
+             cifra_numerica.append(caractere_para_numero('X'))
+        else:
+             return texto_cifrado_str # Retorna o texto original se não for possível corrigir
 
     numeros_descriptografados = []
     for i in range(0, len(cifra_numerica), dimensao_matriz_usada):
         bloco = cifra_numerica[i:i+dimensao_matriz_usada]
         segmento_bloco_descriptografado = [0] * dimensao_matriz_usada
-        for j_coluna in range(dimensao_matriz_usada):
+        for j_linha in range(dimensao_matriz_usada): # Itera nas linhas da matriz chave
             valor_soma = 0
-            for k_elemento in range(dimensao_matriz_usada):
-                valor_soma += bloco[k_elemento] * matriz_chave_inversa_usada[k_elemento][j_coluna]
-            segmento_bloco_descriptografado[j_coluna] = valor_soma % modulo_usado
+            for k_elemento in range(dimensao_matriz_usada): # Faz o produto escalar
+                # --- LINHA CORRIGIDA ---
+                valor_soma += matriz_chave_inversa_usada[j_linha][k_elemento] * bloco[k_elemento]
+            segmento_bloco_descriptografado[j_linha] = valor_soma % modulo_usado
         numeros_descriptografados.extend(segmento_bloco_descriptografado)
 
     texto_descriptografado = "".join([numero_para_caractere(n) for n in numeros_descriptografados])
 
-    if texto_descriptografado.endswith("X"):
+    # Remove o caractere de preenchimento 'X' se ele existir no final
+    while texto_descriptografado.endswith("X"):
         texto_descriptografado = texto_descriptografado[:-1]
 
     return texto_descriptografado
 
-
-
 programaAtivo = True
 
 conexao = mysql.connector.connect(
-host="localhost", # IP ou hostname do servidor MySQL puc-> BD-ACD   localhost
-user="root", # "login" root
-password="@Isamysql", # senha
-database="PI" # nome do banco (tem que existir) #BD170225416(isa)
+    host="localhost", # IP ou hostname do servidor MySQL puc-> BD-ACD   localhost
+    user="root", # "login" root
+    password="lqpqy2", # senha
+    database="PI" # nome do banco (tem que existir) #BD170225416(isa)
 )
 cursor = conexao.cursor()
 print("Conectado com sucesso!")
@@ -111,30 +118,29 @@ soma_ca_global = 0
 soma_ce_global = 0
 soma_nrp_global = 0
 soma_nrq_global = 0
-num_registro_global = 0 
+num_registro_global = 0
 
 def pausar():
     input("\nPressione [Enter] para continuar...")
 
-
 while programaAtivo:
     print("""
     ╔══════════════════════════════════════════════════╗
-    ║                 MENU PRINCIPAL                   ║
+    ║                      MENU PRINCIPAL                      ║
     ╠══════════════════════════════════════════════════╣
-    ║  1 ▸ Inserir registro                            ║
-    ║  2 ▸ Deletar dado por ID                         ║
-    ║  3 ▸ Alterar dado inserido                       ║
-    ║  4 ▸ Listar tabelas                              ║
-    ║  5 ▸ Listar média                                ║
-    ║  6 ▸ Sair                                        ║
+    ║   1 ▸ Inserir registro                             ║
+    ║   2 ▸ Deletar dado por ID                          ║
+    ║   3 ▸ Alterar dado inserido                        ║
+    ║   4 ▸ Listar tabelas                               ║
+    ║   5 ▸ Listar média                                 ║
+    ║   6 ▸ Sair                                         ║
     ╚══════════════════════════════════════════════════╝
     """)
     entrada_menu_str = input("Escolha uma opção (1-6): ")
     if entrada_menu_str.isdigit():
         menu = int(entrada_menu_str)
     else:
-        menu = -1 
+        menu = -1
 
     while menu < 1 or menu > 6 :
         entrada_menu_str = input("Escolha uma opção válida! (1-6): ")
@@ -147,7 +153,7 @@ while programaAtivo:
         case 1: #inserir
             print("""
     ╔══════════════════════════════════════════════════╗
-    ║                INSERIR REGISTRO                  ║
+    ║                     INSERIR REGISTRO                     ║
     ╚══════════════════════════════════════════════════╝ """)
             pausar()
             DATA_ = input("Qual é a data (AAAA-MM-DD)? ")
@@ -212,7 +218,7 @@ while programaAtivo:
         case 2:#DELETAR ALGUM DADO POR ID
             print("""
     ╔══════════════════════════════════════════════════╗
-    ║                DELETAR DADO POR ID               ║
+    ║                   DELETAR DADO POR ID                    ║
     ╚══════════════════════════════════════════════════╝ """)
             pausar()
             deletar=True
@@ -232,16 +238,16 @@ while programaAtivo:
                 else:
                     print("ID inválido. Por favor, insira um número.")
                 
-                deletarN = input('\nDeseja apagar algum outro dado? \n tecle = S para >>>SIM<<      tecle = N para >>> NÃO<<:').upper()
+                deletarN = input('\nDeseja apagar algum outro dado? \n tecle = S para >>>SIM<<       tecle = N para >>> NÃO<<:').upper()
                 while deletarN != 'S' and deletarN != 'N':
-                    deletarN = input('\nDeseja apagar algum outro dado? \n tecle = S para >>>SIM<<      tecle = N para >>> NÃO<<:').upper()
+                    deletarN = input('\nDeseja apagar algum outro dado? \n tecle = S para >>>SIM<<       tecle = N para >>> NÃO<<:').upper()
                 if deletarN == 'N':
                     deletar = False
             pausar() 
         case 3:#ALTERAR DADO INSERIDO
             print("""
     ╔══════════════════════════════════════════════════╗
-    ║             ALTERAR DADO INSERIDO                ║
+    ║                  ALTERAR DADO INSERIDO                   ║
     ╚══════════════════════════════════════════════════╝ """)
             pausar()
             alterar = True
@@ -291,7 +297,7 @@ while programaAtivo:
                             NIVEL_TRANSPORTE_ORIGINAL = "Alta"
 
                         cursor.execute("UPDATE sustentabilidade SET DATA_ = %s, CA_GASTO = %s, NR_QUANTIDADE = %s, NR_PORCENTAGEM = %s, CE_GASTO = %s, UT_CARRO = %s, UT_CARONA_COMPARTILHADA = %s, UT_BICICLETA = %s, UT_TRANSPORTE_PUBLICO = %s, UT_CARRO_ELETRICO = %s, UT_CAMINHADA = %s WHERE ID = %s",
-                                    (DATA_, CA_GASTO, NR_QUANTIDADE, NR_PORCENTAGEM, CE_GASTO, UT_CARRO, UT_CARONA_COMPARTILHADA, UT_BICICLETA, UT_TRANSPORTE_PUBLICO, UT_CARRO_ELETRICO, UT_CAMINHADA, aux))
+                                        (DATA_, CA_GASTO, NR_QUANTIDADE, NR_PORCENTAGEM, CE_GASTO, UT_CARRO, UT_CARONA_COMPARTILHADA, UT_BICICLETA, UT_TRANSPORTE_PUBLICO, UT_CARRO_ELETRICO, UT_CAMINHADA, aux))
                         
                         CA_RESULTADO_CRIPT = criptografar_texto_hill(CA_RESULTADO_ORIGINAL, MATRIZ_CHAVE, DIMENSAO_MATRIZ, MODULO_ALFABETO)
                         NIVEL_NR_PORCENTAGEM_CRIPT = criptografar_texto_hill(NIVEL_NR_PORCENTAGEM_ORIGINAL, MATRIZ_CHAVE, DIMENSAO_MATRIZ, MODULO_ALFABETO)
@@ -310,16 +316,16 @@ while programaAtivo:
                 else:
                     print("ID inválido. Por favor, insira um número.")
 
-                alterarN = input('\nDeseja alterar algum outro dado? \n tecle = S para >>>SIM<<      tecle = N para >>> NÃO<<:').upper()
+                alterarN = input('\nDeseja alterar algum outro dado? \n tecle = S para >>>SIM<<       tecle = N para >>> NÃO<<:').upper()
                 while alterarN != 'S' and alterarN != 'N':
-                    alterarN = input('\nDeseja alterar algum outro dado? \n tecle = S para >>>SIM<<      tecle = N para >>> NÃO<<:').upper()
+                    alterarN = input('\nDeseja alterar algum outro dado? \n tecle = S para >>>SIM<<       tecle = N para >>> NÃO<<:').upper()
                 if alterarN == 'N':
                     alterar = False
             pausar() 
         case 4:#LISTA TABELA POR ID
             print("""
     ╔══════════════════════════════════════════════════╗
-    ║                 LISTAR TABELAS                   ║
+    ║                     LISTAR TABELAS                     ║
     ╚══════════════════════════════════════════════════╝ """)
             pausar()
             print("\nTABELA SUSTENTABILIDADE:")
@@ -356,13 +362,13 @@ while programaAtivo:
             \t Reciclagem de resíduos: {NR_RESULTADO_DESCRIPT}
             \t Uso de eletricidade: {CE_RESULTADO_DESCRIPT}
             \t Uso de transportes: {UT_RESULTADO_DESCRIPT}""")
-            pausar()       
+            pausar() 
         case 5: #LISTAR MÉDIA
             print("""
     ╔══════════════════════════════════════════════════╗
-    ║                   LISTAR MÉDIA                   ║
+    ║                      LISTAR MÉDIA                      ║
     ╚══════════════════════════════════════════════════╝ """)
-            pausar()  
+            pausar() 
             soma_ca_local = 0 
             soma_ce_local = 0
             soma_nrp_local = 0
